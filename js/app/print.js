@@ -28,26 +28,37 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 	mui.plusReady(function() {
 
 		/**
+		 * 导入支持库
+		 */
+		app.util.log('导入支持库');
+		var main = plus.android.runtimeMainActivity();
+		var IntentFilter = plus.android.importClass('android.content.IntentFilter');
+		var BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
+		var BluetoothDevice = plus.android.importClass("android.bluetooth.BluetoothDevice");
+		var BAdapter = BluetoothAdapter.getDefaultAdapter();
+		app.util.log('蓝牙适配器:', BAdapter);
+
+		/**
 		 * 绑定触发操作
 		 */
-		var addcard = document.getElementById('searchDevices');
-		addcard.addEventListener('tap', function(event) {
-			app.util.log('tap button searchDevices');
+		document.getElementById('searchDevices').addEventListener('tap', function(event) {
+			app.util.log('触发搜索蓝牙操作');
 			searchDevices('a');
+		});
+		document.getElementById('open').addEventListener('tap', function(event) {
+			if(!BAdapter.isEnabled()) {
+				app.util.log('触发启用蓝牙操作');
+				BAdapter.enable();
+			}
+		});
+		document.getElementById('close').addEventListener('tap', function(event) {
+			if(BAdapter.isEnabled()) {
+				app.util.log('触发关闭蓝牙操作');
+				BAdapter.disable();
+			}
 		});
 
 		function searchDevices(address) {
-			/**
-			 * 导入支持库
-			 */
-			app.util.log('导入支持库');
-			var main = plus.android.runtimeMainActivity();
-			var IntentFilter = plus.android.importClass('android.content.IntentFilter');
-			var BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
-			var BluetoothDevice = plus.android.importClass("android.bluetooth.BluetoothDevice");
-			var BAdapter = BluetoothAdapter.getDefaultAdapter();
-			app.util.log('蓝牙适配器:', BAdapter);
-
 			/**
 			 * 开启蓝牙设备
 			 */
@@ -58,12 +69,19 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 				//BAdapter.disable();
 			}
 
+			var filter = new IntentFilter();
+			var bdevice = new BluetoothDevice();
+			app.util.log('注册监听广播');
+			filter.addAction(bdevice.ACTION_FOUND);
+			filter.addAction(BAdapter.ACTION_DISCOVERY_STARTED);
+			filter.addAction(BAdapter.ACTION_DISCOVERY_FINISHED);
+			filter.addAction(BAdapter.ACTION_STATE_CHANGED);
+
 			/**
 			 * 注册监听事件
 			 */
 			app.util.log('注册监听事件');
-			var filter = new IntentFilter();
-			var bdevice = new BluetoothDevice();
+			var button1 = document.getElementById('searchDevices');
 			var receiver;
 			receiver = plus.android.implements('io.dcloud.android.content.BroadcastReceiver', {
 				onReceive: function(context, intent) { //实现onReceiver回调函数
@@ -82,12 +100,21 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 						case 'android.bluetooth.adapter.action.DISCOVERY_STARTED': //BAdapter.ACTION_DISCOVERY_STARTED:
 							{
 								app.util.log('开始扫描蓝牙设备');
+								button1.disabled = true;
+								button1.innerText = '正在搜索请稍候';
 								//查询扫描
 								//页面扫描(需要BLUETOOTH权限)
 								break;
 							}
 						case 'android.bluetooth.device.action.FOUND': //bdevice.ACTION_FOUND:
 							{
+								var on = null;
+								var un = null;
+								var vlist1 = document.getElementById('NoTMatch'); //注册容器用来显示未配对设备
+								vlist1.innerHTML = ''; //清空容器
+								var vlist2 = document.getElementById('Matched'); //注册容器用来显示未配对设备
+								vlist2.innerHTML = ''; //清空容器
+
 								BleDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 								app.util.log('设备发现[' + "Name : " + BleDevice.getName() + " Address: " + BleDevice.getAddress() + ']');
 								//判断是否配对
@@ -147,24 +174,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 				}
 			});
 
-			app.util.log('注册监听广播');
-			filter.addAction(bdevice.ACTION_FOUND);
-			filter.addAction(BAdapter.ACTION_DISCOVERY_STARTED);
-			filter.addAction(BAdapter.ACTION_DISCOVERY_FINISHED);
-			filter.addAction(BAdapter.ACTION_STATE_CHANGED);
-
 			main.registerReceiver(receiver, filter); //注册监听
-
-			var on = null;
-			var un = null;
-			var vlist1 = document.getElementById('NoTMatch'); //注册容器用来显示未配对设备
-			vlist1.innerHTML = ''; //清空容器
-			var vlist2 = document.getElementById('Matched'); //注册容器用来显示未配对设备
-			vlist2.innerHTML = ''; //清空容器
-			var button1 = document.getElementById('searchDevices');
-			button1.disabled = true;
-			button1.innerText = '正在搜索请稍候';
-
 			BAdapter.startDiscovery(); //开启搜索
 		}
 
@@ -207,7 +217,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 				device = null //这里关键
 				bluetoothSocket.close(); //必须关闭蓝牙连接否则意外断开的话打印错误
 
-			}else{
+			} else {
 				app.util.log('设备未连接');
 			}
 
