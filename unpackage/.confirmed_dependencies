@@ -1,0 +1,20 @@
+{
+  "index.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/app/print.js",
+      "js/require.js"
+    ],
+    "refer": []
+  },
+  "view/index.html": {
+    "resources": [
+      "js/lib/mui/mui.enterfocus.js",
+      "css/mui.min.css",
+      "js/app/print.js",
+      "js/lib/mui/mui.min.js",
+      "js/define/app.js",
+      "js/require.js"
+    ]
+  }
+}
