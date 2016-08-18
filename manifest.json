@@ -208,7 +208,8 @@
 					"js/app/print.js",
 					"js/lib/mui/mui.min.js",
 					"js/define/app.js",
-					"js/require.js"
+					"js/require.js",
+					"js/app/ble.js"
 				],
 				"refer": [],
 				"priority": 0
