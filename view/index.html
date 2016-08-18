@@ -16,11 +16,15 @@
 						<button class="mui-btn mui-btn-block mui-btn-primary" id="searchDevices">搜索设备</button>
 						<button class="mui-btn mui-btn-block mui-btn-primary" id="open">开启设备</button>
 						<button class="mui-btn mui-btn-block mui-btn-primary" id="close">关闭设备</button>
+						<button class="mui-btn mui-btn-block mui-btn-primary" id="accept">处于接收</button>
+						<button class="mui-btn mui-btn-block mui-btn-primary" id="send">处于发送</button>
 					</div>
 				</li>
 			</ul>
 			<ul class="mui-table-view bluetooth-list" id="NoTMatch"></ul>
 			<ul class="mui-table-view bluetooth-list" id="Matched"></ul>
+			<div class="mui-content" id="msg">
+			</div>
 		</div>
 	</body>
 	<script data-main="../js/app/ble" src="../js/require.js"></script>
