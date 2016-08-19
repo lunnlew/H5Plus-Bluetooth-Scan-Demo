@@ -280,6 +280,9 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 					var msg = ins.readLine();
 					app.util.log(msg);
 					document.getElementById('msg').innerHTML = msg;
+					if(msg=="break"){
+						break;
+					}
 				};
 			} catch(e1) {
 				//e1.printStackTrace();
