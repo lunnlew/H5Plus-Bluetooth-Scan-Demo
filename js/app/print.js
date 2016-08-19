@@ -67,6 +67,9 @@ requirejs(['define/app', 'mui/mui.min', 'define/Thread', /*, 'define/bughd', 'de
 				'code': 0,
 				'msg': null
 			}));
+			
+			//关闭worker
+			//worker.terminate()
 
 		} else {
 			app.util.log('Sorry! No Web Worker support..');
