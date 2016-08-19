@@ -233,8 +233,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 		}
 
 		function serverTread(address) {
-			var device = null,
-				BAdapter = null,
+			var BAdapter = null,
 				BluetoothAdapter = null,
 				uuid = null,
 				main = null,
@@ -250,8 +249,6 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			UUID = plus.android.importClass("java.util.UUID");
 			uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 			BAdapter = BluetoothAdapter.getDefaultAdapter();
-			device = BAdapter.getRemoteDevice(address);
-			plus.android.importClass(device);
 
 			app.util.log('等待客户端连接中....');
 			var serverSocket = BAdapter.listenUsingRfcommWithServiceRecord('btspp', uuid);

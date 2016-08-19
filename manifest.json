@@ -209,7 +209,9 @@
 					"js/lib/mui/mui.min.js",
 					"js/define/app.js",
 					"js/require.js",
-					"js/app/ble.js"
+					"js/app/ble.js",
+					"js/app/sock_worker.js",
+					"js/define/Thread.js"
 				],
 				"refer": [],
 				"priority": 0
