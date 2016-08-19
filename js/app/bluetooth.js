@@ -33,11 +33,11 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			"CILENT": 1,
 			"SERVER": 2
 		};
-		
+
 		var tttt = 0;
 
 		var main = plus.android.runtimeMainActivity();
-		if (Build.VERSION.SDK_INT >= 18) { //两种方法二选一
+		if(Build.VERSION.SDK_INT >= 18) { //两种方法二选一
 			var Context = plus.android.importClass("android.content.Context");
 			bluetoothManager = main.getSystemService(Context.BLUETOOTH_SERVICE);
 			plus.android.importClass(bluetoothManager);
@@ -50,7 +50,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			app.util.log('蓝牙适配器:', BAdapter);
 		}
 		var Intent = plus.android.importClass("android.content.Intent");
-		if (BAdapter == null || !BAdapter.isEnabled()) {
+		if(BAdapter == null || !BAdapter.isEnabled()) {
 			//弹出对话框提示用户是后打开
 			//var REQUEST_ENABLE_BT = 1;
 			//var enableBtIntent = new Intent(BAdapter.ACTION_REQUEST_ENABLE);
@@ -58,6 +58,17 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 
 			//不做提示，强行打开
 			BAdapter.enable();
+		}
+
+		var lists = BAdapter.getBondedDevices();
+		plus.android.importClass(lists);
+		var len = lists.size();
+		var iterator = lists.iterator();
+		plus.android.importClass(iterator);
+		while(iterator.hasNext()) {
+			var d = iterator.next();
+			plus.android.importClass(d);
+			app.util.log(d.getName()+'=='+d.getAddress());
 		}
 
 		var IntentFilter = plus.android.importClass('android.content.IntentFilter');
@@ -79,7 +90,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			searchDevices();
 		});
 		document.getElementById('open').addEventListener('tap', function(event) {
-			if (!BAdapter.isEnabled()) {
+			if(!BAdapter.isEnabled()) {
 				app.util.log('触发启用蓝牙操作');
 				BAdapter.enable();
 			}
@@ -97,7 +108,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			tttt = TYPE.CILENT;
 		});
 		document.getElementById('close').addEventListener('tap', function(event) {
-			if (BAdapter.isEnabled()) {
+			if(BAdapter.isEnabled()) {
 				app.util.log('触发关闭蓝牙操作');
 				BAdapter.disable();
 			}
@@ -106,7 +117,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			var mac = this.getAttribute('data-mac');
 			var act = this.getAttribute('data-act');
 			app.util.log(act);
-			switch (act) {
+			switch(act) {
 				case 'createBond':
 					{
 						createBond(mac);
@@ -139,7 +150,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 		receiver = plus.android.implements('io.dcloud.android.content.BroadcastReceiver', {
 			onReceive: function(context, intent) { //实现onReceiver回调函数
 				plus.android.importClass(intent); //通过intent实例引入intent类，方便以后的‘.’操作
-				switch (intent.getAction()) {
+				switch(intent.getAction()) {
 					//case 'android.bluetooth.adapter.action.REQUEST_ENABLE': //BAdapter.ACTION_REQUEST_ENABLE:
 					//	{
 					//		app.util.log('请求开启蓝牙');
@@ -169,7 +180,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 							BleDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 							app.util.log('设备发现[' + "Name : " + BleDevice.getName() + " Address: " + BleDevice.getAddress() + ']');
 							//判断是否配对
-							if (BleDevice.getBondState() == bdevice.BOND_NONE) {
+							if(BleDevice.getBondState() == bdevice.BOND_NONE) {
 								return;
 								app.util.log("未配对蓝牙设备：" + BleDevice.getName() + '    ' + BleDevice.getAddress());
 								var li1 = document.createElement('li'); //注册
@@ -185,7 +196,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 								app.util.log("已配对蓝牙设备：" + BleDevice.getName() + '    ' + BleDevice.getAddress());
 								var li2 = document.createElement('li');
 								li2.setAttribute('data-mac', BleDevice.getAddress());
-								var tread = tttt==TYPE.CILENT?'cilentTread':'serverTread';
+								var tread = tttt == TYPE.CILENT ? 'cilentTread' : 'serverTread';
 								li2.setAttribute('data-act', tread);
 								li2.setAttribute('css', 'mui-table-view-cell');
 								var div = document.createElement('div');
@@ -221,12 +232,12 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 
 		function createBond(address) {
 			//如果出搜索中，先关闭
-			if (BAdapter.isDiscovering()) BAdapter.cancelDiscovery();
+			if(BAdapter.isDiscovering()) BAdapter.cancelDiscovery();
 			var btDev = BAdapter.getRemoteDevice(address);
 			plus.android.importClass(btDev);
-			if (btDev.getBondState() == bdevice.BOND_NONE) {
+			if(btDev.getBondState() == bdevice.BOND_NONE) {
 				plus.android.invoke(btDev, 'createBond');
-			} else if (btDev.getBondState() == bdevice.BOND_BONDED) {
+			} else if(btDev.getBondState() == bdevice.BOND_BONDED) {
 				app.util.log('已配对');
 				//连接设备
 			}
@@ -239,7 +250,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 				main = null,
 				bluetoothSocket = null;
 
-			if (!address) {
+			if(!address) {
 				mui.toast('请选择蓝牙打印机');
 				return;
 			}
@@ -265,17 +276,17 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			var e1 = plus.android.importClass('java.io.IOException');
 			var ins = new BufferedReader(new InputStreamReader(inputStream));
 			try {
-				while (true) {
+				while(true) {
 					var msg = ins.readLine();
 					app.util.log(msg);
 					document.getElementById('msg').innerHTML = msg;
 				};
-			} catch (e1) {
+			} catch(e1) {
 				//e1.printStackTrace();
 			} finally {
 				try {
 					inputStream.close();
-				} catch (e1) {
+				} catch(e1) {
 					//e1.printStackTrace();
 				}
 			}
@@ -285,7 +296,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 
 		function Bytes2Str(arr) {
 			var str = "";
-			for (var i = 0; i < arr.length; i++) {
+			for(var i = 0; i < arr.length; i++) {
 				var tmp = String.fromCharCode(arr[i]);
 				str += tmp;
 			}
@@ -294,7 +305,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 
 		function Str2Bytes(str) { // 因为datapacket发送接收的都是数据流，所以要转换为bytes数组，相当于java里的getBytes()
 			var ch, st, re = [];
-			for (var i = 0; i < str.length; i++) {
+			for(var i = 0; i < str.length; i++) {
 				ch = str.charCodeAt(i);
 				st = [];
 				do {
@@ -316,7 +327,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 				main = null,
 				bluetoothSocket = null;
 
-			if (!address) {
+			if(!address) {
 				mui.toast('请选择蓝牙打印机');
 				return;
 			}
@@ -332,12 +343,12 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
 			plus.android.importClass(bluetoothSocket);
 
-			if (!bluetoothSocket.isConnected()) {
+			if(!bluetoothSocket.isConnected()) {
 				app.util.log('检测到设备未连接，尝试连接....');
 				bluetoothSocket.connect();
 			}
 
-			if (bluetoothSocket.isConnected()) {
+			if(bluetoothSocket.isConnected()) {
 				app.util.log('设备已连接');
 				var outputStream = bluetoothSocket.getOutputStream();
 				plus.android.importClass(outputStream);
@@ -361,7 +372,7 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 				main = null,
 				bluetoothSocket = null;
 
-			if (!address) {
+			if(!address) {
 				mui.toast('请选择蓝牙打印机');
 				return;
 			}
@@ -377,12 +388,12 @@ requirejs(['define/app', 'mui/mui.min' /*, 'define/bughd', 'define/bugtags'*/ ],
 			bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
 			plus.android.importClass(bluetoothSocket);
 
-			if (!bluetoothSocket.isConnected()) {
+			if(!bluetoothSocket.isConnected()) {
 				app.util.log('检测到设备未连接，尝试连接....');
 				bluetoothSocket.connect();
 			}
 
-			if (bluetoothSocket.isConnected()) {
+			if(bluetoothSocket.isConnected()) {
 				app.util.log('设备已连接');
 				var outputStream = bluetoothSocket.getOutputStream();
 				plus.android.importClass(outputStream);

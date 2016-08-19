@@ -211,7 +211,10 @@
 					"js/require.js",
 					"js/app/ble.js",
 					"js/app/sock_worker.js",
-					"js/define/Thread.js"
+					"js/define/Thread.js",
+					"js/require-worker.js",
+					"js/define/require-worker.js",
+					"js/sock_worker.js"
 				],
 				"refer": [],
 				"priority": 0

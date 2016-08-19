@@ -29,7 +29,10 @@ requirejs(['define/app', 'mui/mui.min', 'define/Thread', /*, 'define/bughd', 'de
 
 		if(typeof(Worker) !== "undefined") {
 			app.util.log('worker init');
-			var worker = new Worker("../js/app/sock_worker.js");
+			var worker = new Worker("../js/sock_worker.js");
+			worker.addEventListener("error", function(evt) {
+				app.util.log("Line #" + evt.lineno + " - " + evt.message + " in " + evt.filename);
+			}, false);
 			worker.onmessage = function(event) {
 				var data = JSON.parse(event.data);
 				switch(data.code) {
@@ -61,13 +64,13 @@ requirejs(['define/app', 'mui/mui.min', 'define/Thread', /*, 'define/bughd', 'de
 				'command': 1,
 				'data': {
 					"data": {
-						"address": null
+						"address": "00:00:46:66:28:01"
 					}
 				},
 				'code': 0,
 				'msg': null
 			}));
-			
+
 			//关闭worker
 			//worker.terminate()
 
