@@ -214,7 +214,11 @@
 					"js/define/Thread.js",
 					"js/require-worker.js",
 					"js/define/require-worker.js",
-					"js/sock_worker.js"
+					"js/sock_worker.js",
+					"js/app/bluetooth.js",
+					"js/define/bluetooth.js",
+					"js/app/demo.js",
+					"fonts/mui.ttf"
 				],
 				"refer": [],
 				"priority": 0
@@ -234,7 +238,6 @@
 				"js/lib/echarts-all.js",
 				"js/lib/mui/mui.zoom.js",
 				"js/lib/mui/mui.poppicker.js",
-				"fonts/mui.ttf",
 				"js/lib/mui/mui.view.js",
 				"js/lib/mui/mui.listpicker.js",
 				"js/lib/mui/mui.locker.js",
